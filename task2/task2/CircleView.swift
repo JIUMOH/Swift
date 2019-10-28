@@ -36,6 +36,9 @@ class CircleView: UIView {
         let cWidth = CGFloat.random(in: 0...screen.size.width-width)
         let cHeight = CGFloat.random(in: 0...screen.size.height-width)
         
+        self.clipsToBounds = true
+        self.layer.masksToBounds = true
+        
         
         self.frame = CGRect(x: cWidth , y: cHeight, width: 0, height: 0)
         
@@ -43,12 +46,11 @@ class CircleView: UIView {
         UIView.animate(withDuration: 0.5) {
             self.backgroundColor = UIColor(red: CGFloat(randomRed/255), green: CGFloat(randomGreen/255), blue: CGFloat(randomBlue/255), alpha: 1.0)
             self.frame = CGRect(x: cWidth , y: cHeight, width: width, height: width)
+            self.layer.cornerRadius = width / 2
         }
         
         
-        self.clipsToBounds = true
-        self.layer.masksToBounds = true
-        self.layer.cornerRadius = width / 2
+        
     
         setupGestureRecognizers()
     }
@@ -70,6 +72,16 @@ extension CircleView: UIGestureRecognizerDelegate {
 
 extension CircleView{
     
+    override func point(inside point: CGPoint,
+                        with event: UIEvent?) -> Bool
+    {
+        var distance : CGFloat
+        let pointInSuperView = self.convert(point, to: self.superview)
+        distance = sqrt(pow(self.center.x - pointInSuperView.x, 2)+pow(self.center.y - pointInSuperView.y, 2))
+        if (distance > self.frame.size.width / 2) { return false }
+        else { return true }
+    }
+    
     private func setupGestureRecognizers() {
         singleTapGestureRecognizer.addTarget(self, action: #selector(handleSingleTapGesture(_:)))
         singleTapGestureRecognizer.numberOfTapsRequired = 1
@@ -81,8 +93,11 @@ extension CircleView{
     }
 
     @objc private func handleSingleTapGesture(_ gestureRecognizer: UITapGestureRecognizer) {
+        
         UIView.animate(withDuration: 0.5) {
             self.backgroundColor = self.backgroundColor?.withAlphaComponent(0)
+            self.frame = CGRect(x: self.center.x , y: self.center.y , width: 0, height: 0)
+            self.layer.cornerRadius = self.frame.size.width / 2
         }
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
         self.removeFromSuperview()
