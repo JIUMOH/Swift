@@ -20,7 +20,7 @@ class ViewController: UIViewController {
     }
     @IBAction func buttonTap(_ sender: Any) {
         
-        var newBox: BoxView = BoxView()
+        let newBox: BoxView = BoxView()
         view.addSubview(newBox)
     }
     

@@ -27,8 +27,9 @@ class BoxView: UIView {
         
         self.translatesAutoresizingMaskIntoConstraints = false
 
-        var widthConstraint = self.widthAnchor.constraint(equalToConstant:type(of: self).initialBoxDimSize)
-        var heightConstraint = self.heightAnchor.constraint(equalToConstant: type(of: self).initialBoxDimSize)
+        let widthConstraint = self.widthAnchor.constraint(equalToConstant:type(of: self).initialBoxDimSize)
+        let heightConstraint = self.heightAnchor.constraint(equalToConstant: type(of: self).initialBoxDimSize)
+        
         centerYConstraint = self.centerYAnchor.constraint(equalTo: mView.centerYAnchor)
         centerXConstraint = self.centerXAnchor.constraint(equalTo: mView.centerXAnchor)
         
@@ -88,7 +89,7 @@ fileprivate extension BoxView {
          pinchGestureRecognizer,
          rotateGestureRecognizer
         ].forEach { $0.delegate = self }
-
+        
         self.addGestureRecognizer(panGestureRecognizer)
         self.addGestureRecognizer(pinchGestureRecognizer)
         self.addGestureRecognizer(rotateGestureRecognizer)
@@ -111,6 +112,7 @@ fileprivate extension BoxView {
             guard let panGestureAnchorPoint = panGestureAnchorPoint else { return }
 
             let gesturePoint = gestureRecognizer.location(in: mView)
+            
 
             centerXConstraint.constant += gesturePoint.x - panGestureAnchorPoint.x
             centerYConstraint.constant += gesturePoint.y - panGestureAnchorPoint.y
