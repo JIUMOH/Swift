@@ -13,6 +13,7 @@
 		49B8DA3923685EC800FDB6C9 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 49B8DA3723685EC800FDB6C9 /* Main.storyboard */; };
 		49B8DA3B23685EC900FDB6C9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 49B8DA3A23685EC900FDB6C9 /* Assets.xcassets */; };
 		49B8DA3E23685EC900FDB6C9 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 49B8DA3C23685EC900FDB6C9 /* LaunchScreen.storyboard */; };
+		907BB930236A1F6500E5090B /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 907BB92F236A1F6500E5090B /* WebViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +25,7 @@
 		49B8DA3A23685EC900FDB6C9 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		49B8DA3D23685EC900FDB6C9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		49B8DA3F23685EC900FDB6C9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		907BB92F236A1F6500E5090B /* WebViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -59,6 +61,7 @@
 				49B8DA3323685EC800FDB6C9 /* AppDelegate.swift */,
 				491B0A9D236863AB00CF81C3 /* TableViewController.swift */,
 				491B0AA1236881F300CF81C3 /* CountryViewController.swift */,
+				907BB92F236A1F6500E5090B /* WebViewController.swift */,
 				49B8DA3723685EC800FDB6C9 /* Main.storyboard */,
 				49B8DA3A23685EC900FDB6C9 /* Assets.xcassets */,
 				49B8DA3C23685EC900FDB6C9 /* LaunchScreen.storyboard */,
@@ -141,6 +144,7 @@
 				491B0AA2236881F300CF81C3 /* CountryViewController.swift in Sources */,
 				491B0A9E236863AB00CF81C3 /* TableViewController.swift in Sources */,
 				49B8DA3423685EC800FDB6C9 /* AppDelegate.swift in Sources */,
+				907BB930236A1F6500E5090B /* WebViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

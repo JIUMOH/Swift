@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VariablesViewState
+   version = "1.0">
+   <ContextStates>
+      <ContextState
+         contextName = "closure #1 in TableViewController.getJSON(jsonURL:):TableViewController.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "countries">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "TableViewController.viewDidLoad():TableViewController.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "countries">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "TableViewController.getJSON(jsonURL:):TableViewController.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "json">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "closure #1 in CountryViewController.viewDidLoad():CountryViewController.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "country">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "WebViewController.viewDidLoad():WebViewController.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "url">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+   </ContextStates>
+</VariablesViewState>
