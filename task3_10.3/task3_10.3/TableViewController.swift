@@ -12,9 +12,6 @@ struct Country {
     var name : String
     var id : String
     var code : String
-    var capital : String
-    var phoneCode : String
-    var currency : String
 }
 
 class TableCellView : UITableViewCell {
@@ -33,14 +30,9 @@ class TableViewController: UITableViewController {
         for code in NSLocale.isoCountryCodes  {
             let id = NSLocale.localeIdentifier(fromComponents: [NSLocale.Key.countryCode.rawValue: code])
             let name = NSLocale(localeIdentifier: "en_UK") .displayName(forKey: NSLocale.Key.identifier, value: id) ?? "Country not found for code: \(code)"
-            let tempCountry = Country(name: name, id: id,code: code, capital: "", phoneCode: "", currency:  "")
+            let tempCountry = Country(name: name, id: id,code: code)
             countries.append(tempCountry)
         }
-        
-        /*getDataFromJSON(jsonURL: "http://country.io/capital.json", dataName: "capital")
-        getDataFromJSON(jsonURL: "http://country.io/phone.json", dataName: "phoneCode")
-        getDataFromJSON(jsonURL: "http://country.io/currency.json", dataName: "currency")
-        */
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -51,10 +43,8 @@ class TableViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "LabelCell", for: indexPath) as! TableCellView
         
-        cell.flagImage?.image = UIImage(named: "flagImage")
         cell.flagImage?.setImageFromUrl(imageURL: "https://www.countryflags.io/\(countries[indexPath.row].code)/flat/64.png")
         cell.nameLabel?.text = countries[indexPath.row].name
-        
         
         return cell
         
@@ -73,39 +63,37 @@ class TableViewController: UITableViewController {
         CountryViewController.country = countries[index]
     }
     
-    /*func getDataFromJSON(jsonURL : String, dataName : String){
-        guard let url = URL(string: jsonURL) else { return }
-        
-        URLSession.shared.dataTask(with: url) { (data,respoder,error) in
-    
-            guard let data = data else { return }
-            guard error == nil else { return }
-        
-            do {
-                if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String : String] {
-                    for i in 0...self.countries.count - 1 {
-                        if let value = json[self.countries[i].code] {
-                            switch dataName {
-                            case "capital":
-                                self.countries[i].capital = value
-                            case "phoneCode":
-                                self.countries[i].phoneCode = value
-                            case "currency":
-                                self.countries[i].currency = value
-                            default:
-                                return
-                            }
-                            
-                        }
-                    }
-                }
-                
-            } catch let error {
-            
+    func verifyUrl (urlString: String?) -> Bool {
+        if let urlString = urlString {
+            if let url = NSURL(string: urlString) {
+                return UIApplication.shared.canOpenURL(url as URL)
             }
-        
-        }.resume()
-    }*/
+        }
+        return false
+    }
+    
+    func showErrorMessage(){
+        DispatchQueue.main.async {
+            let alertController = UIAlertController(title: "Error", message: "Coudn’t connect to server!", preferredStyle: .alert)
+            
+            let retryAction = UIAlertAction(title: "Retry", style: .default) { (action) in
+                self.tableView.reloadData()
+            }
+            let cancelAction = UIAlertAction(title: "OK", style: .cancel) { (action) in
+            }
+                
+            alertController.addAction(retryAction)
+            alertController.addAction(cancelAction)
+            
+            if let popoverController = alertController.popoverPresentationController {
+                popoverController.sourceView = self.view
+                popoverController.sourceRect = CGRect(x: self.view.bounds.midX, y: self.view.bounds.midY, width: 0, height: 0)
+                popoverController.permittedArrowDirections = []
+            }
+            
+            self.present(alertController, animated: true)
+        }
+    }
  
 }
 
@@ -113,10 +101,20 @@ extension UIImageView {
     func setImageFromUrl(imageURL :String) {
         URLSession.shared.dataTask( with: NSURL(string:imageURL)! as URL, completionHandler: {
             (data, response, error) -> Void in
-            DispatchQueue.main.async {
-                if let data = data {
-                    self.image = UIImage(data: data)
-
+            if error == nil{
+                DispatchQueue.main.async {
+                    if let data = data {
+                        self.image = UIImage(data: data)
+                    }
+                }
+            } else {
+                let viewController = UIApplication.getPresentedViewController()
+                if viewController!.children.count == 2 { return }
+                for item in (viewController!.children){
+                    if item is TableViewController{
+                        let vC = item as! TableViewController
+                        vC.showErrorMessage()
+                    }
                 }
             }
         }).resume()

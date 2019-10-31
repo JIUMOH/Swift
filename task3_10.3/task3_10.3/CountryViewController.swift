@@ -32,26 +32,42 @@ class CountryViewController: UIViewController {
         }
     }
     
-    override func didMove(toParent parent: UIViewController?) {
-        
-    }
-    
     func getDataFromJSON(jsonURL : String, dataName : String){
         guard let url = URL(string: jsonURL) else { return }
         
         let font = UIFont.systemFont(ofSize: 20)
         let attributes = [NSAttributedString.Key.font: font]
         
+        var tempDataName = dataName
+        
         URLSession.shared.dataTask(with: url) { (data,respoder,error) in
     
-            guard let data = data else { return }
-            guard error == nil else { return }
+            guard let data = data else {
+                if dataName.contains("retry") {
+                    self.showErrorMessage()
+                } else {
+                    self.getDataFromJSON(jsonURL: jsonURL, dataName: "retry" + dataName)
+                }
+                return
+            }
+            guard error == nil else {
+                if dataName.contains("retry") {
+                    self.showErrorMessage()
+                } else {
+                    self.getDataFromJSON(jsonURL: jsonURL, dataName: "retry" + dataName)
+                }
+                return
+            }
         
+            if dataName.contains("retry") {
+                tempDataName = String(dataName.dropFirst(5))
+            }
+
             do {
                 if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String : String] {
                     if let value = json[self.country!.code] {
                         DispatchQueue.main.async {
-                            switch dataName {
+                            switch tempDataName {
                                 case "capital":
                                     self.countryImage?.setImageFromUrl(imageURL: "https://www.countryflags.io/\(self.country!.code)/shiny/64.png")
                                     self.countryName?.attributedText = NSAttributedString(string: self.country!.name, attributes: attributes)
@@ -67,8 +83,8 @@ class CountryViewController: UIViewController {
                         }
                     }
                 }
-            } catch let error {
-            
+            } catch {
+                    self.showErrorMessage()
             }
         
         }.resume()
@@ -89,8 +105,32 @@ class CountryViewController: UIViewController {
         optionMenu.addAction(appAction)
         optionMenu.addAction(safariAction)
         
+       
+        if let popoverController = optionMenu.popoverPresentationController {
+            popoverController.sourceView = self.view
+            popoverController.sourceRect = CGRect(x: self.view.bounds.midX, y: self.view.bounds.midY, width: 0, height: 0)
+            popoverController.permittedArrowDirections = []
+        }
+            
         self.present(optionMenu, animated: true, completion: nil)
         
+    }
+    
+    func showErrorMessage(){
+        DispatchQueue.main.async {
+            let alertController = UIAlertController(title: "Error", message: "Coudn’t connect to server!", preferredStyle: .alert)
+            let cancelAction = UIAlertAction(title: "OK", style: .cancel) { (action) in
+            }
+            alertController.addAction(cancelAction)
+            
+            if let popoverController = alertController.popoverPresentationController {
+                popoverController.sourceView = self.view
+                popoverController.sourceRect = CGRect(x: self.view.bounds.midX, y: self.view.bounds.midY, width: 0, height: 0)
+                popoverController.permittedArrowDirections = []
+            }
+            
+            self.present(alertController, animated: true)
+        }
     }
     
 }
