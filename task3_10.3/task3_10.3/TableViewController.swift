@@ -18,6 +18,11 @@ class TableCellView : UITableViewCell {
     @IBOutlet weak var flagImage: UIImageView!
     @IBOutlet weak var nameLabel: UILabel!
     
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        flagImage.image = nil
+    }
+    
 }
 
 class TableViewController: UITableViewController {
@@ -43,8 +48,8 @@ class TableViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "LabelCell", for: indexPath) as! TableCellView
         
-        cell.flagImage?.setImageFromUrl(imageURL: "https://www.countryflags.io/\(countries[indexPath.row].code)/flat/64.png")
-        cell.nameLabel?.text = countries[indexPath.row].name
+        cell.flagImage.setImageFromUrl(imageURL: "https://www.countryflags.io/\(countries[indexPath.row].code)/flat/64.png")
+        cell.nameLabel.text = countries[indexPath.row].name
         
         return cell
         
@@ -63,14 +68,6 @@ class TableViewController: UITableViewController {
         CountryViewController.country = countries[index]
     }
     
-    func verifyUrl (urlString: String?) -> Bool {
-        if let urlString = urlString {
-            if let url = NSURL(string: urlString) {
-                return UIApplication.shared.canOpenURL(url as URL)
-            }
-        }
-        return false
-    }
     
     func showErrorMessage(){
         DispatchQueue.main.async {
@@ -98,7 +95,8 @@ class TableViewController: UITableViewController {
 }
 
 extension UIImageView {
-    func setImageFromUrl(imageURL :String) {
+    
+    func setImageFromUrl(imageURL: String) {
         URLSession.shared.dataTask( with: NSURL(string:imageURL)! as URL, completionHandler: {
             (data, response, error) -> Void in
             if error == nil{

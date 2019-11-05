@@ -8,10 +8,14 @@
 
 import UIKit
 
+enum DataType {
+    case capitals
+}
+
 class CountryViewController: UIViewController {
 
     @IBOutlet weak var countryImage: UIImageView!
-    @IBOutlet weak var countryName: UILabel! 
+    @IBOutlet weak var countryName: UILabel!
     @IBOutlet weak var countryCapital: UILabel!
     @IBOutlet weak var countryPhoneCode: UILabel!
     @IBOutlet weak var countryCurrency: UILabel!
@@ -32,7 +36,7 @@ class CountryViewController: UIViewController {
         }
     }
     
-    func getDataFromJSON(jsonURL : String, dataName : String){
+    func getDataFromJSON(jsonURL : String, dataName : String) {
         guard let url = URL(string: jsonURL) else { return }
         
         let font = UIFont.systemFont(ofSize: 20)
@@ -108,7 +112,8 @@ class CountryViewController: UIViewController {
        
         if let popoverController = optionMenu.popoverPresentationController {
             popoverController.sourceView = self.view
-            popoverController.sourceRect = CGRect(x: self.view.bounds.midX, y: self.view.bounds.midY, width: 0, height: 0)
+            //popoverController.sourceRect = CGRect(x: self.view.bounds.midX, y: self.view.bounds.midY, width: 0, height: 0)
+            popoverController.barButtonItem = self.navigationItem.rightBarButtonItem
             popoverController.permittedArrowDirections = []
         }
             
