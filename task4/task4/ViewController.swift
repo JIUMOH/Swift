@@ -11,26 +11,22 @@ import UIKit
 class ViewController: UIViewController {
 
     var lineArray: [[CGPoint]] = [[CGPoint]()]
-    var viewArray: [DrawView] = [DrawView()]
+    
     private let panGestureRecognizer = UIPanGestureRecognizer()
     
-    var maxX : CGFloat = 0
-    var maxY : CGFloat = 0
-    var minX : CGFloat = 0
-    var minY : CGFloat = 0
-    
-    let lineWidth : CGFloat = 10.0
+    var lineWidth : CGFloat = 1.0
+    var lineColor : UIColor = UIColor.red
     
     var undoBarButton = UIBarButtonItem()
     var redoBarButton = UIBarButtonItem()
     
-    var prevView = DrawView()
+    var prevViewStack = [DrawView]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         addNavigationBar()
-    
+        setupLayout()
         setupGestureRecognizers()
         
 //        let drawView = DrawView()
@@ -65,17 +61,79 @@ class ViewController: UIViewController {
         self.view?.frame = CGRect(x: 0, y: height, width: UIScreen.main.bounds.width, height: (UIScreen.main.bounds.height - height))
     }
     
+    let yellowButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.backgroundColor = .yellow
+        button.layer.borderWidth = 1
+        button.addTarget(self, action: #selector(handleColorChange), for: .touchUpInside)
+        return button
+    }()
+    
+    let redButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.backgroundColor = .red
+        button.layer.borderWidth = 1
+        button.addTarget(self, action: #selector(handleColorChange), for: .touchUpInside)
+        return button
+    }()
+    
+    let blueButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.backgroundColor = .blue
+        button.layer.borderWidth = 1
+        button.addTarget(self, action: #selector(handleColorChange), for: .touchUpInside)
+        return button
+    }()
+    
+    @objc fileprivate func handleColorChange(button: UIButton) {
+        lineColor = (button.backgroundColor ?? .black)
+    }
+    
+    let slider: UISlider = {
+        let slider = UISlider()
+        slider.minimumValue = 1
+        slider.maximumValue = 10
+        slider.addTarget(self, action: #selector(handleSliderChange), for: .valueChanged)
+        return slider
+    }()
+    
+    @objc fileprivate func handleSliderChange() {
+        lineWidth = CGFloat(slider.value)
+    }
+    
+    fileprivate func setupLayout() {
+        let colorsStackView = UIStackView(arrangedSubviews: [yellowButton, redButton, blueButton])
+        colorsStackView.distribution = .fillEqually
+        
+        let stackView = UIStackView(arrangedSubviews: [
+            colorsStackView,
+            slider,
+            ])
+        stackView.spacing = 12
+        stackView.distribution = .fillEqually
+        
+        view.addSubview(stackView)
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        stackView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+        if #available(iOS 11.0, *) {
+            stackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor).isActive = true
+        } else {
+            // Fallback on earlier versions
+        }
+        stackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -8).isActive = true
+    }
+    
     @objc func undoButtonTap(){
-        prevView = viewArray.popLast()!
-        if viewArray.count == 1 { undoBarButton.isEnabled = false }
-        prevView.removeFromSuperview()
+        prevViewStack.append(view.subviews.last as! DrawView)
+        if !(view.subviews[view.subviews.count - 2] is DrawView) { undoBarButton.isEnabled = false }
+        prevViewStack[prevViewStack.count - 1].removeFromSuperview()
         redoBarButton.isEnabled = true
     }
     
     @objc func redoButtonTap(){
-        view.addSubview(prevView)
-        viewArray.append(prevView)
-        redoBarButton.isEnabled = false
+        guard let lastView = prevViewStack.popLast() else { return }
+        view.addSubview(lastView)
+        if prevViewStack.count == 0 { redoBarButton.isEnabled = false }
         undoBarButton.isEnabled = true
     }
     
@@ -111,41 +169,25 @@ fileprivate extension ViewController {
             redoBarButton.isEnabled = false
             
             let drawView = DrawView()
+            drawView.clipsToBounds = false
             
-            drawView.strokeColor = UIColor(red: CGFloat.random(in: 0...1), green: CGFloat.random(in: 0...1), blue: CGFloat.random(in: 0...1), alpha: 1).cgColor
+            drawView.strokeColor = lineColor
+            drawView.strokeWidth = lineWidth
             
-            drawView.backgroundColor = .white
+            drawView.backgroundColor = .clear
             
             drawView.frame = self.view.frame
-            
-            //drawView.layer.borderColor = UIColor.black.cgColor
-            //drawView.layer.borderWidth = 2.0
-            
-            maxX = 0
-            maxY = 0
-            minX = 0
-            minY = 0
             
             view.addSubview(drawView)
             
             lineArray.append([CGPoint]())
-            viewArray.append(drawView)
             
         case .changed:
             let point = gestureRecognizer.location(in: self.view)
             
             print(point)
             
-            if minX == 0 { minX = point.x }
-            if minY == 0 { minY = point.y }
-            
-            if maxX < point.x { maxX = point.x }
-            if maxY < point.y { maxY = point.y }
-            if minX > point.x { minX = point.x }
-            if minY > point.y { minY = point.y }
-            
-            
-            let lastView = viewArray[viewArray.count - 1]
+            let lastView = view.subviews.last as! DrawView
             
             guard var lastLine = lineArray.popLast() else { return }
             
@@ -154,12 +196,7 @@ fileprivate extension ViewController {
             
             lastView.line = lastLine
             
-            let rect = CGRect(x: minX - lineWidth, y: minY - lineWidth, width: maxX - minX + lineWidth, height: maxY - minY + lineWidth)
-            
-            lastView.frame = rect
-            lastView.bounds = rect
-            
-            lastView.setNeedsDisplay()
+            lastView.drawView()
             
         case .cancelled, .ended:
             break
