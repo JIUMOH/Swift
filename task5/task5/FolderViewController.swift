@@ -12,8 +12,10 @@ import CoreData
 class FolderViewController: UIViewController {
 
     var folder : Folder?
-    var delegate: TableViewControllerDelegate?
     var viewMode : String?
+    
+    var onNewFolder:((Folder) -> Void)?
+    var onNameChanged:((String) -> Void)?
     
     @IBOutlet weak var nameTextField: UITextField!
     
@@ -21,7 +23,7 @@ class FolderViewController: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         nameTextField.text = folder!.name
-        
+        nameTextField.becomeFirstResponder()
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Done", style: .plain, target: self, action: #selector(doneButtonTap))
     }
     
@@ -47,10 +49,10 @@ class FolderViewController: UIViewController {
         }
         
         if viewMode == "Edit" {
-            delegate?.onNameChanged(name: nameTextField.text!)
+            onNameChanged?(nameTextField.text!)
         } else {
             folder!.name = nameTextField.text
-            delegate?.onNewFolder(folder: folder!)
+            onNewFolder?(folder!)
         }
         
         navigationController?.popViewController(animated: true)

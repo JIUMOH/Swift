@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		85A5E7E4237D703000D19DBD /* FolderModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85A5E7E3237D703000D19DBD /* FolderModel.swift */; };
 		85A5E7F1237F9B7300D19DBD /* Folder+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85A5E7EF237F9B7300D19DBD /* Folder+CoreDataClass.swift */; };
 		85A5E7F2237F9B7300D19DBD /* Folder+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85A5E7F0237F9B7300D19DBD /* Folder+CoreDataProperties.swift */; };
 		85CF93D0237A0EAA008700C7 /* TableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85CF93CF237A0EAA008700C7 /* TableViewController.swift */; };
@@ -39,7 +38,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		85A5E7E3237D703000D19DBD /* FolderModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderModel.swift; sourceTree = "<group>"; };
 		85A5E7EF237F9B7300D19DBD /* Folder+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Folder+CoreDataClass.swift"; sourceTree = "<group>"; };
 		85A5E7F0237F9B7300D19DBD /* Folder+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Folder+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		85CF93CF237A0EAA008700C7 /* TableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewController.swift; sourceTree = "<group>"; };
@@ -112,7 +110,6 @@
 				85F72D962379CBBA00CA385E /* AppDelegate.swift */,
 				85CF93CF237A0EAA008700C7 /* TableViewController.swift */,
 				85F72D982379CBBA00CA385E /* FolderViewController.swift */,
-				85A5E7E3237D703000D19DBD /* FolderModel.swift */,
 				85F72D9A2379CBBA00CA385E /* Main.storyboard */,
 				85F72DA02379CBBD00CA385E /* Assets.xcassets */,
 				85F72DA22379CBBD00CA385E /* LaunchScreen.storyboard */,
@@ -274,7 +271,6 @@
 				85F72D992379CBBA00CA385E /* FolderViewController.swift in Sources */,
 				85A5E7F2237F9B7300D19DBD /* Folder+CoreDataProperties.swift in Sources */,
 				85A5E7F1237F9B7300D19DBD /* Folder+CoreDataClass.swift in Sources */,
-				85A5E7E4237D703000D19DBD /* FolderModel.swift in Sources */,
 				85F72D9F2379CBBA00CA385E /* task5.xcdatamodeld in Sources */,
 				85F72D972379CBBA00CA385E /* AppDelegate.swift in Sources */,
 				85CF93D0237A0EAA008700C7 /* TableViewController.swift in Sources */,

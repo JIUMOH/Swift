@@ -9,24 +9,7 @@
 import UIKit
 import CoreData
 
-protocol TableViewControllerDelegate
-{
-    func onNameChanged(name: String)
-    func onNewFolder(folder: Folder)
-}
-
-class TableViewController: UITableViewController, TableViewControllerDelegate {
-    
-    func onNewFolder(folder: Folder) {
-        self.folder!.addChild(folder: folder)
-        reloadData()
-    }
-    
-    func onNameChanged(name: String) {
-        folder?.name = name
-        navigationItem.title = name
-        reloadData()
-    }
+class TableViewController: UITableViewController{
 
     @IBOutlet weak var addBarButton: UIBarButtonItem!
     @IBOutlet weak var editBarButton: UIBarButtonItem!
@@ -35,11 +18,6 @@ class TableViewController: UITableViewController, TableViewControllerDelegate {
     static var movingFolder : Folder?
     
     var folder : Folder?
-    
-    let appDelegate = UIApplication.shared.delegate as! AppDelegate
-    var managedContext : NSManagedObjectContext {
-        return appDelegate.persistentContainer.viewContext
-    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -123,10 +101,30 @@ class TableViewController: UITableViewController, TableViewControllerDelegate {
                 FolderViewController.folder = folder
             }
         }
-        
-        FolderViewController.delegate = self
+        FolderViewController.onNewFolder = { folder in
+            self.folder!.addChild(folder: folder)
+            self.reloadData()
+        }
+        FolderViewController.onNameChanged = { name in
+            self.folder?.name = name
+            self.navigationItem.title = name
+            self.reloadData()
+        }
     }
- 
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        reloadData()
+    }
+    
+    func reloadData(){
+        tableView.reloadData()
+    }
+    
+}
+
+extension TableViewController {
+    
     func showAlert(message : String, folder : Folder){
         let alertController = UIAlertController(title: "Warning", message: message, preferredStyle: .alert)
         let acceptAction = UIAlertAction(title: "OK", style: .default) { (action) in
@@ -179,7 +177,7 @@ class TableViewController: UITableViewController, TableViewControllerDelegate {
                     let cancelAction = UIAlertAction(title: "OK", style: .cancel) { (action) in
                     }
                     alertController.addAction(cancelAction)
-                        
+                    
                     if let popoverController = alertController.popoverPresentationController {
                         popoverController.sourceView = self.view
                         popoverController.sourceRect = CGRect(x: self.view.bounds.midX, y: self.view.bounds.midY, width: 0, height: 0)
@@ -214,18 +212,6 @@ class TableViewController: UITableViewController, TableViewControllerDelegate {
         }
         
         self.present(alertController, animated: true)
-    }
-    
-}
-
-extension TableViewController {
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        reloadData()
-    }
-    
-    func reloadData(){
-        tableView.reloadData()
     }
 
 }
