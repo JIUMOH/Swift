@@ -11,66 +11,49 @@ import CoreData
 
 class FolderViewController: UIViewController {
 
-    var folder : NSManagedObject?
-    var delegate: FolderDelegate?
-    var viewMode: String?
-    var namesList = [String]()
-    
-    let appDelegate = UIApplication.shared.delegate as! AppDelegate
-    var managedContext : NSManagedObjectContext {
-        return appDelegate.persistentContainer.viewContext
-    }
+    var folder : Folder?
+    var delegate: TableViewControllerDelegate?
+    var viewMode : String?
     
     @IBOutlet weak var nameTextField: UITextField!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
-        if viewMode == "Edit" {
-            nameTextField.text = folder?.value(forKey: "name") as? String
-        }
+        nameTextField.text = folder!.name
         
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Done", style: .plain, target: self, action: #selector(doneButtonTap))
-    
-        loadData()
     }
     
     @objc func doneButtonTap() {
         if nameTextField.text!.isEmpty {
 //            showErrorMessage(message: "You did not enter a name!")
+              folder?.delete()
               navigationController?.popViewController(animated: true)
               return
         }
-        if namesList.contains(nameTextField.text!)
-            && nameTextField.text != folder?.value(forKey: "name") as? String {
+        
+        if folder!.owner!.isHasSubFolderWithName(name: nameTextField.text!)
+         && nameTextField.text != folder!.name{
             showErrorMessage(message: "This name is already in use!")
+            folder?.delete()
+            navigationController?.popViewController(animated: true)
+            return
+        }
+        
+        if nameTextField.text == folder!.name{
+            navigationController?.popViewController(animated: true)
             return
         }
         
         if viewMode == "Edit" {
             delegate?.onNameChanged(name: nameTextField.text!)
         } else {
-            delegate?.onNewFolder(name: nameTextField.text!)
+            folder!.name = nameTextField.text
+            delegate?.onNewFolder(folder: folder!)
         }
         
         navigationController?.popViewController(animated: true)
-    }
-    
-    func loadData(){
-        var subFolders = NSSet()
-        if viewMode == "Edit" {
-            guard let owner = folder?.value(forKey: "owner") as! NSManagedObject? else { return }
-            subFolders = owner.value(forKey: "subFolders") as! NSSet
-        } else {
-            subFolders = folder!.value(forKey: "subFolders") as! NSSet
-        }
-        namesList.removeAll()
-        for f in subFolders {
-            if f is NSManagedObject {
-                let ff = f as! NSManagedObject
-                namesList.append(ff.value(forKey: "name") as! String)
-            }
-        }
     }
     
     func showErrorMessage(message : String){
@@ -87,7 +70,6 @@ class FolderViewController: UIViewController {
         
         self.present(alertController, animated: true)
     }
-    
 
 }
 
